@@ -1,0 +1,2 @@
+the following text should remain intact: 123-45-678b hello world 281-344-6784
+the following text should be redacted 123-45-6789 987-65-4321 a123-45-6789b
