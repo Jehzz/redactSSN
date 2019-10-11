@@ -1,33 +1,39 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include <stdio.h>
-#include <sys/stat.h>
+
 using namespace std;
 
 int main()
 {
-    cout << "This program reads text from file input.txt, redacts SSN's via regex, and saves to output.txt" << endl;
+    string filePath;
+    string str;
+    string outFilePath;
+    regex regSNN("([0-9]{3}-[0-9]{2}-[0-9]{4})");
+    string replacementString("XXX-XX-XXXX");
+
+
 
     /*The process for iterating through files in a given folder is apparently different between Windows and Linux
-    So for now this program only redacts the specified file. In this case; the included input.txt
+    So for now this program only writes the results to a different file in the same folder
 
+    //Create new folder to hold results
+    mkdir("../input", 777);
 
-    I believe this code block will enable directory creation for the output results in Windows
-    mkdir("/newFolder", NULL);
-    cout << "Enter the filename/path: " << endl;
-    cin >> filePath;
-
-    ifstream inputFileStream(filePath);
-    ofstream outputFileStream("/newFolder/output.txt");
+    //and possibly a cross platform solution using boost
+	boost::filesystem::path dir(filePath);
+    boost::filesystem::create_directory(dir)
 
     */
 
-    ifstream inputFileStream("input.txt");
-    ofstream outputFileStream("output.txt");
+    cout << "This program redacts SSN's via regex, and saves to another file" << endl;
+    cout << "Enter the filename: " << endl;
+    cin >> filePath;
+    cout << "Enter the name for the redacted output: " << endl;
+    cin >> outFilePath;
 
-    regex regSNN("([0-9]{3}-[0-9]{2}-[0-9]{4})");  //Regular expression for SSN
-    string replacementString("XXX-XX-XXXX");
+    ifstream inputFileStream(filePath);
+    ofstream outputFileStream(outFilePath);
 
     if (!inputFileStream){
         cerr << "Could not open input file " << endl;
@@ -38,10 +44,14 @@ int main()
         return 1;
     }
 
-    string str;
-    while (getline(inputFileStream, str))
+    while (getline(inputFileStream, str))                //Read input line-by-line
     {
-        str = regex_replace(str, regSNN, replacementString);
-        outputFileStream << str << '\n';
+        str = regex_replace(str, regSNN, replacementString);    //regex_replace searches for and replaces each match
+        outputFileStream << str << '\n';                        //Save the edited string to the output
     }
+
+    //close
+    inputFileStream.close();
+    outputFileStream.close();
+    return 0;
 }

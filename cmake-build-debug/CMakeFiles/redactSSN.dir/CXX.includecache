@@ -13,8 +13,4 @@ iostream
 -
 regex
 -
-stdio.h
--
-sys/stat.h
--
 
